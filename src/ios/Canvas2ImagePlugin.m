@@ -21,8 +21,13 @@
 
 - (void)saveImageDataToLibrary:(CDVInvokedUrlCommand*)command
 {
-    self.callbackId = command.callbackId;
-	NSData* imageData = [[NSData alloc] initWithBase64EncodedString:[command.arguments objectAtIndex:0] options:0];
+  self.callbackId = command.callbackId;
+	
+  #ifndef __CORDOVA_3_8_0
+      NSData* imageData = [NSData dataFromBase64String:[command.arguments objectAtIndex:0]];
+  #else
+      NSData* imageData = [[NSData alloc] initWithBase64EncodedString:[command.arguments objectAtIndex:0] options:0];
+  #endif
 	
 	UIImage* image = [[[UIImage alloc] initWithData:imageData] autorelease];	
 	UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
